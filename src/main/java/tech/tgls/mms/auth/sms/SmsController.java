@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import tech.tgls.mms.auth.api.exception.OperateFailureException;
-import tech.tgls.mms.auth.common.DateUtil;
 import tech.tgls.mms.auth.common.consts.Constants;
 import tech.tgls.mms.auth.common.jsonbean.JsonResultBean;
 import tech.tgls.mms.auth.common.utils.YunPianSms;
@@ -111,17 +110,7 @@ public class SmsController {
         String code = request.getParameter("vcode");
         logger.info("tel：" + tel);
         logger.info("vcode：" + code);
-//        RegistSmsCode oauthSmsCode = oauthSmsService.findByTelAndCode(tel, code);
-        RegistSmsCode oauthSmsCode = oauthSmsService.findByTel(tel);
-        if (oauthSmsCode == null) return false;
-        if (!oauthSmsCode.getCode().equals(code)) return false;
-        Date nowTime = new Date();
-        Date createTime = oauthSmsCode.getCreated();
-        if (createTime == null) return false;
-        int difMin = DateUtil.getDiscrepantMin(createTime, nowTime);
-        logger.info("创建时间与现在时间分钟差：" + difMin);
-        if (difMin > 10) return false;
-        return true;
+        return this.oauthSmsService.isSmsCodeValid(tel, code);
     }
 	
     /**

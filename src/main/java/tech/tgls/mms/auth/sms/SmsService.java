@@ -9,4 +9,6 @@ public interface SmsService {
 	RegistSmsCode findByTelAndCode(String tel, String code);
 
 	RegistSmsCode findByTel(String tel);
+
+	boolean isSmsCodeValid(String tel, String code);
 }
