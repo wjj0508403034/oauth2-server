@@ -59,7 +59,7 @@ public class OAuthServerConfig extends AuthorizationServerConfigurerAdapter {
 			throws Exception {
 		endpoints.authenticationManager(authenticationManager)
 				.authorizationCodeServices(this.authorizationCodeServices())
-				.tokenStore(this.tokenStore());
+				.tokenStore(this.tokenStore()).approvalStoreDisabled();
 	}
 
 	@Override

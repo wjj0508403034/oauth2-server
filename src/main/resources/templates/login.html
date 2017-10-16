@@ -1,12 +1,77 @@
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+  th:with="version=${T(tech.tgls.mms.auth.view.helper.StaticHelper).getVersion()}">
+
 <head>
-<title>Login</title>
+  <title>登录</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="http://cdn.bootcss.com/weui/0.4.3/style/weui.min.css">
+  <link rel="stylesheet" href="http://cdn.bootcss.com/jquery-weui/0.8.2/css/jquery-weui.min.css">
+  <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="http://cdn.bootcss.com/jquery-weui/0.8.2/js/jquery-weui.min.js"></script>
+  <link rel="stylesheet" th:href="@{'css/oauth.css?' + ${version}}">
 </head>
-<body>
-	<form action="/login" method="post">
-		<input name="username" type="text" placeholder="username"> <input
-			name="password" type="password" placeholder="password"> <input
-			type="submit" value="Login">
-	</form>
+
+<body class="loginbg">
+  <div class="logo" style="display: none">
+    <img src="images/mobile/logo.png" alt="名气家" />
+    <div>名气家员</div>
+  </div>
+
+  <div class="loginInfo" id="login2">
+    <form action="/login" method="post">
+      <input type="hidden" name="authSystem" value="${authSystem}">
+      <input type="hidden" name="wxInfoId" value="${wxInfoId}"> <input type="hidden" name="oauthOpenId" value="${oauthOpenId}">
+      <div class="weui_cells weui_cells_form">
+        <div class="weui_cell">
+          <div class="weui_cell_hd">
+            <label class="weui_label">手机号</label>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" id="username" type="number" placeholder="请输入手机号" name="username">
+          </div>
+        </div>
+
+        <div class="weui_cell weui_vcode" th:if="${T(tech.tgls.mms.auth.view.helper.ViewHelper).isAccountLargeZero(#httpServletRequest)}">
+          <div class="weui_cell_hd">
+            <label class="weui_label">图形码</label>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary weui_cell_border">
+            <input class="weui_input" type="text" placeholder="请输入图形验证码" name="kaptcha" id="kaptcha">
+          </div>
+          <div class="weui_cell_ft">
+            <p>
+              <img style="height: 22px; margin-left: 0px;" id="kaptchaImg" alt="点击更换" title="点击更换" onclick="changeR(this)" src="<%=request.getContextPath()%>/kaptcha-image"
+              />
+            </p>
+          </div>
+        </div>
+
+        <div class="weui_cell weui_vcode">
+          <div class="weui_cell_hd">
+            <label class="weui_label">验证码</label>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary weui_cell_border">
+            <input class="weui_input" type="number" placeholder="请输入验证码" name="smscode" id="smscode">
+          </div>
+          <div class="weui_cell_ft">
+            <p>
+              <button id="codeBtn" value="获取验证码" class="btn_code">获取验证码</button>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="weui_btn_area login_div">
+        <button href="javascript:" id="submit" class="weui_btn  weui_btn_primarysubmit">用户登录</button>
+      </div>
+      <div class="agreement">
+        <a th:href="@{/home/index}">点击登录按键，即表示您已阅读并同意<span>服务协议</span></a>
+      </div>
+    </form>
+  </div>
+  </div>
+  <script th:src="@{'js/login.js?' + ${version}}"></script>
 </body>
+
 </html>

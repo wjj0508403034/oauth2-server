@@ -2,10 +2,14 @@ package tech.tgls.mms.auth.account.impl;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import tech.tgls.mms.auth.account.Account;
 import tech.tgls.mms.auth.account.AccountService;
@@ -30,17 +34,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public UserInfo getUserInfo(Principal principal) {
-		UserDetailsImpl user = null;
-		if (principal instanceof OAuth2Authentication) {
-			user = (UserDetailsImpl) ((OAuth2Authentication) principal)
-					.getPrincipal();
-		}
-
-		if (user == null) {
-			throw new RuntimeException("Current user is null");
-		}
-
-		Account account = user.getAccount();
+		Account account = this.getAccount(principal);
 		UserInfo userInfo = new UserInfo();
 		userInfo.put("userId", account.getId());
 		userInfo.put("username", account.getUsername());
@@ -55,4 +49,44 @@ public class AccountServiceImpl implements AccountService {
 		return userInfo;
 	}
 
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public UserInfo updateUserProfile(Principal principal,
+			Map<String, Object> data) {
+		Account account = this.getAccount(principal);
+		this.userAddtionalInfoRepo.deleteUserInfosByUserId(account.getId());
+
+		for (Entry<String, Object> entry : data.entrySet()) {
+			if (!this.ignoreKeys(entry.getKey())) {
+				UserAdditionalInfo userInfo = new UserAdditionalInfo(
+						account.getId(), entry.getKey(), entry.getValue()
+								.toString());
+				this.userAddtionalInfoRepo.save(userInfo);
+			}
+		}
+
+		return this.getUserInfo(principal);
+	}
+
+	private boolean ignoreKeys(String key) {
+		if (StringUtils.equalsIgnoreCase("userId", key)) {
+			return true;
+		}
+
+		if (StringUtils.equalsIgnoreCase("username", key)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private Account getAccount(Principal principal) {
+		if (principal instanceof Authentication) {
+			UserDetailsImpl user = (UserDetailsImpl) ((Authentication) principal)
+					.getPrincipal();
+			return user.getAccount();
+		}
+
+		throw new RuntimeException("Current user is null");
+	}
 }

@@ -1,0 +1,228 @@
+.oauthFrm{
+    width: 300px;
+    margin: 0 auto;
+}
+
+
+body, html {
+    height: 100%;
+    -webkit-tap-highlight-color: transparent;
+    color:#666;
+}
+ul, li {
+    list-style: none;
+    padding: 0px;
+}
+.clearfix {
+    zoom: 1;
+}
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    font-size: 0;
+    clear: both;
+    visibility: hidden;
+}
+.weui_cells_access a.weui_cell,a{ color: #333333}
+.bg{
+    background: #e9ecf1;
+}
+.loginbg{
+    background :#fff;
+}
+.weui_cells{
+    margin-top: 0;
+    background-color:#fff;
+
+}
+.weui_cells:after{
+    border-bottom: 1px solid #eee;
+}
+.loginInfo .weui_cells:after{
+    border-bottom: 0;
+}
+
+.weui_btn_primary{
+    margin-top: 20px;
+    background: #eee;
+    color: #333;
+
+}
+.weui_btn_primary:after{
+    border:none;
+}
+.weui_btn_primarysubmit{
+    background: #f39800;
+    color: #fff;
+}
+
+
+
+
+
+/*登录页面*/
+.logo{
+    /*height: 160px;*/
+    text-align: center;
+    padding: 37px 0 35px 0;
+    color: #9f9f9f;
+}
+.logo img{
+    width: 55px;
+    height:42px;
+}
+.weui_cell_hd .weui_label{
+    font-size: 16px;
+    color: #666;
+    width: auto;
+    margin-right: 30px;
+}
+.weui_cell_border{
+    border-right: 1px solid #ccc;
+}
+.weui_cells{
+    font-size:14px;
+}
+.loginInfo .weui_cells:before,.bindCard  .weui_cells:before{
+    border-top: none;
+}
+#existCard .weui_cell:first-child:before{
+    display: block;
+}
+
+.loginInfo .login-select .login-checkbox{
+    /*height: 20px;*/
+}
+.loginInfo .login-select span{
+    padding-left: 4px;
+}
+.loginInfo .weui_cells_form .weui_cell_ft{
+    font-size: 12px;
+    /*border-left: 1px solid #ccc;*/
+    padding-left: 10px;
+}
+.loginInfo .weui_cells_form .weui_cell_ft a{
+    color:#7188FF;
+}
+.loginInfo .weui_vcode{
+    padding: 10px 15px;
+}
+.weui_msg{
+    text-align: center;
+    padding-top: 16px;
+}
+.login_div{
+    margin-top:30px;
+}
+.agreement{
+    margin-top: 10px;
+    padding-left: 15px;
+    font-size: 12px;
+}
+.agreement span{
+    color: #0055aa;
+}
+/*获取验证码按钮*/
+.btn_code{
+    width: 73px;
+    margin-left: 0px;
+    border: none;
+    background: none;
+    color: #0055aa;
+    /*text-decoration: underline;*/
+}
+.btn_code:hover{
+    outline: none;
+}
+.user-panel-box .user-edit:after,
+.weui_cells_access .weui_cell_ft:after{
+    border-width: 1px 1px 0 0;
+}
+.weui_cell{
+    height: 29px;
+}
+.weui_cell:before,.weui_cells:before{
+    border-top:1px solid #eee;
+}
+.autocomplete{
+    border: 1px solid #9ACCFB;
+    background-color: white;
+    text-align: left;
+    z-index: 99;
+}
+.autocomplete li{
+    list-style-type: none;
+}
+.clickable {
+    cursor: default;
+}
+.highlight {
+    background-color: #9ACCFB;
+}
+.weui_icon_success_no_circle:before{
+    color: #333;
+    font-size: 13px;
+    padding-top:5px;
+}
+
+
+/*服务协议*/
+.agreement_content{
+    padding: 15px;
+    font-size: 14px;
+    color: #333;
+}
+.agreement_content .title{
+    font-size: 18px;
+    text-align: center;
+}
+.agreement_content p{
+    text-indent: 28px;
+    text-align:justify;
+    text-justify:inter-ideograph;
+    line-height: 180%;
+}
+.weui_cell_login:after{
+    border-bottom: 0;
+}
+
+/*400,500*/
+.error_content{
+    width: 100%;
+    margin: 0 auto;
+    background: #fff;
+    height: 100%;
+    display: table;
+}
+.error_main{
+    width: 100%;
+    margin: 0 auto;
+    display: table-cell;
+    vertical-align: middle;
+    position: relative;
+    top: -10px;
+}
+.error_main_pic{
+    width: 26%;
+    margin: 0 auto;
+}
+.error_main_text{
+    text-align: center;
+    margin-top: 28px;
+    color: #002c65;
+    font-size: 1em;
+}
+.error_main_btn{
+    margin-top: 15px;
+    text-align: center;
+}
+.error_main_btn a{
+    border:1px solid #1d2088;
+    color: #002c65;
+    padding: 7px 12px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+

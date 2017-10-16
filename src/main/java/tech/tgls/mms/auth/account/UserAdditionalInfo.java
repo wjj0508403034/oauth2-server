@@ -20,6 +20,16 @@ public class UserAdditionalInfo {
 	@Column
 	private String value;
 
+	public UserAdditionalInfo() {
+
+	}
+
+	public UserAdditionalInfo(Long userId, String name, String value) {
+		this.userId = userId;
+		this.name = name;
+		this.value = value;
+	}
+
 	public Long getId() {
 		return id;
 	}

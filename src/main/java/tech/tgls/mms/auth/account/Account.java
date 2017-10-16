@@ -1,12 +1,16 @@
 package tech.tgls.mms.auth.account;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Account {
+public class Account implements Serializable {
+
+	private static final long serialVersionUID = -4550237420396067829L;
 
 	@Id
 	@GeneratedValue
