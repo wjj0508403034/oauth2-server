@@ -11,8 +11,8 @@ public class UserDetailsImpl extends User {
 	private Account account;
 
 	public UserDetailsImpl(Account account) {
-		super(account.getUsername(), account.getPassword(), AuthorityUtils
-				.createAuthorityList("ROLE_USER"));
+		super(account.getUsername(), account.getPasswordOrDefault(),
+				AuthorityUtils.createAuthorityList("ROLE_USER"));
 		this.account = account;
 	}
 

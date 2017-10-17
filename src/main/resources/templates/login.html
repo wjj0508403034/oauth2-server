@@ -1,4 +1,5 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" th:with="version=${T(tech.tgls.mms.auth.view.helper.StaticHelper).getVersion()}">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+  th:with="version=${T(tech.tgls.mms.auth.view.helper.StaticHelper).getVersion()}">
 
 <head>
   <title>登录</title>
@@ -40,7 +41,8 @@
           </div>
           <div class="weui_cell_ft">
             <p>
-              <img style="height: 22px; margin-left: 0px;" id="kaptchaImg" alt="点击更换" title="点击更换" onclick="changeR(this)" src="<%=request.getContextPath()%>/kaptcha-image" />
+              <img style="height: 22px; margin-left: 0px;" id="kaptchaImg" alt="点击更换" title="点击更换" onclick="changeR(this)" th:src="@{/kaptcha-image}"
+              />
             </p>
           </div>
         </div>

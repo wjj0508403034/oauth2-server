@@ -50,20 +50,3 @@ create table if not exists oauth_approvals (
     expires_at TIMESTAMP,
     last_modified_at TIMESTAMP NULL DEFAULT NULL
 );
-
-
-
---create table if not exists client_details (
---  client_id VARCHAR(255) PRIMARY KEY,
---  resource_ids VARCHAR(255),
---  client_secret VARCHAR(255),
---  scope VARCHAR(255),
---  grant_types VARCHAR(255),
---  redirect_url VARCHAR(255),
---  authorities VARCHAR(255),
---  access_token_validity INTEGER,
---  refresh_token_validity INTEGER,
---  additional_information VARCHAR(4096),
---  auto_approve_scopes VARCHAR(255)
---);
-

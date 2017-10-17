@@ -1,10 +1,9 @@
-package tech.tgls.mms.auth.account.security;
+package tech.tgls.mms.auth.account.security.weixin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -14,34 +13,32 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import tech.tgls.mms.auth.sms.SmsService;
-
-public class PhoneAuthenticationProvider implements AuthenticationProvider {
-
-	private static final Logger logger = LoggerFactory.getLogger(PhoneAuthenticationProvider.class);
-	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
+public class WeiXinAuthenticationProvider implements AuthenticationProvider {
+	private static final Logger logger = LoggerFactory
+			.getLogger(WeiXinAuthenticationProvider.class);
+	protected MessageSourceAccessor messages = SpringSecurityMessageSource
+			.getAccessor();
 
 	private UserDetailsService userDetailsService;
-	private SmsService smsService;
 
-	public PhoneAuthenticationProvider(UserDetailsService userDetailsService, SmsService smsService) {
+	public WeiXinAuthenticationProvider(UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
-		this.smsService = smsService;
 	}
 
 	@Override
-	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		PhoneAuthenticationToken token = (PhoneAuthenticationToken) authentication;
-		String phone = token.getPhone();
-		String smscode = token.getSmscode();
+	public Authentication authenticate(Authentication authentication)
+			throws AuthenticationException {
+		WeiXinToken token = (WeiXinToken) authentication;
 
 		UserDetails loadedUser = null;
 		try {
-			loadedUser = this.userDetailsService.loadUserByUsername(phone);
+			loadedUser = this.userDetailsService.loadUserByUsername(token
+					.getOpenId());
 		} catch (UsernameNotFoundException notFound) {
 			throw notFound;
 		} catch (Exception repositoryProblem) {
-			throw new InternalAuthenticationServiceException(repositoryProblem.getMessage(), repositoryProblem);
+			throw new InternalAuthenticationServiceException(
+					repositoryProblem.getMessage(), repositoryProblem);
 		}
 
 		if (loadedUser == null) {
@@ -50,12 +47,6 @@ public class PhoneAuthenticationProvider implements AuthenticationProvider {
 					"UserDetailsService returned null, which is an interface contract violation");
 		}
 
-		if (!this.smsService.isSmsCodeValid(phone, smscode)) {
-			logger.error("Bad credentials, sms code invalid or expired.");
-			throw new BadCredentialsException(messages.getMessage("PhoneAuthenticationProvider.badCredentials",
-					"Bad credentials, sms code invalid or expired."));
-		}
-		
 		token.setPrincipal(loadedUser);
 		token.setDetails(loadedUser);
 		authentication.setAuthenticated(true);
@@ -65,7 +56,7 @@ public class PhoneAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		return authentication.equals(PhoneAuthenticationToken.class);
+		return authentication.equals(WeiXinToken.class);
 	}
 
 }

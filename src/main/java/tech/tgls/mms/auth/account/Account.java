@@ -6,6 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang3.StringUtils;
 
 @Entity
 public class Account implements Serializable {
@@ -44,5 +47,15 @@ public class Account implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@Transient
+	public String getPasswordOrDefault() {
+
+		if (StringUtils.isEmpty(this.password)) {
+			return "--";
+		}
+
+		return this.password;
 	}
 }

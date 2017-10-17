@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,29 +24,46 @@ import tech.tgls.mms.auth.account.security.PhoneAuthenticationToken;
 @Controller
 public class LoginController {
 
-	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(LoginController.class);
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
 	@RequestMapping(value = "/loginByPhone", method = RequestMethod.POST)
-	public void loginByPhone(HttpServletRequest request, HttpServletResponse response,
+	public String loginByPhone(HttpServletRequest request,
+			HttpServletResponse response, Model model,
 			@RequestParam(name = "username") String phone,
-			@RequestParam(name = "kaptcha", required = false) String kaptcha,
-			@RequestParam(name = "smscode") String smscode) throws ServletException, IOException {
+			@RequestParam(name = "smscode") String smscode)
+			throws ServletException, IOException {
 		long startTime = System.currentTimeMillis();
 
 		logger.info(" begin login ...");
 
-		PhoneAuthenticationToken authRequest = new PhoneAuthenticationToken(phone, smscode);
+		try {
+			PhoneAuthenticationToken authRequest = new PhoneAuthenticationToken(
+					phone, smscode);
 
-		Authentication authResult = this.authenticationManager.authenticate(authRequest);
+			Authentication authResult = this.authenticationManager
+					.authenticate(authRequest);
 
-		long endTime = System.currentTimeMillis();
-		logger.info("login successfully.");
-		logger.info("LoginController.loginByPhone执行耗时：" + (endTime - startTime) / 1000 + "秒");
+			long endTime = System.currentTimeMillis();
+			logger.info("login successfully.");
+			logger.info("LoginController.loginByPhone执行耗时："
+					+ (endTime - startTime) / 1000 + "秒");
 
-		SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
-		successHandler.onAuthenticationSuccess(request, response, authResult);
+			SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+			successHandler.onAuthenticationSuccess(request, response,
+					authResult);
+			return null;
+		} catch (AuthenticationException ex) {
+			logger.error("login failed.", ex);
+			Integer account = (Integer) request.getAttribute("account");
+			if (account == null) {
+				account = 0;
+			}
+			request.setAttribute("account", ++account);
+			return "login";
+		}
 	}
 }

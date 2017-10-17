@@ -8,11 +8,13 @@ public class PhoneAuthenticationToken extends AbstractAuthenticationToken {
 
 	private Object principal;
 	private Object credentials;
+	private String smscode;
+	private String phone;
 
 	public PhoneAuthenticationToken(String phone, String smscode) {
 		super(null);
-		this.principal = phone;
-		this.credentials = smscode;
+		this.phone = phone;
+		this.smscode = smscode;
 	}
 
 	@Override
@@ -27,6 +29,15 @@ public class PhoneAuthenticationToken extends AbstractAuthenticationToken {
 
 	public void setPrincipal(Object principal) {
 		this.principal = principal;
+	}
+
+
+	public String getSmscode() {
+		return smscode;
+	}
+
+	public String getPhone() {
+		return phone;
 	}
 
 }
