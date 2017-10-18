@@ -54,11 +54,12 @@ public class WechatController {
 		}
 
 		String originAuthorizeRequestUrl = weChatDelegateService.obtainAuthorizeRequest(state);
-		originAuthorizeRequestUrl = URLDecoder.decode(originAuthorizeRequestUrl, "utf-8");
-		if (StringUtils.isEmpty(state)) {
+		if (StringUtils.isEmpty(originAuthorizeRequestUrl)) {
 			logger.error("授权超时，原来授权信息已经丢失");
 			return "redirect:/errors/wx404";
 		}
+		
+		originAuthorizeRequestUrl = URLDecoder.decode(originAuthorizeRequestUrl, "utf-8");
 
 		String appId = this.getOpenIdFromUrl(originAuthorizeRequestUrl);
 
