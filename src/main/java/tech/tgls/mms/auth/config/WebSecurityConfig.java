@@ -11,9 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 import tech.tgls.mms.auth.account.security.PhoneAuthenticationProvider;
-import tech.tgls.mms.auth.account.security.weixin.WeiXinAuthenticationProvider;
-import tech.tgls.mms.auth.account.security.weixin.WeiXinPreAuthorizeFilter;
 import tech.tgls.mms.auth.sms.SmsService;
+import tech.tgls.mms.auth.wechat.security.WechatAuthenticationProvider;
+import tech.tgls.mms.auth.wechat.security.WechatAuthorizeFilter;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -33,17 +33,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Bean
-	public WeiXinAuthenticationProvider weiXinAuthenticationProvider(){
-		return new WeiXinAuthenticationProvider(userDetailsService);
+	public WechatAuthenticationProvider weiXinAuthenticationProvider(){
+		return new WechatAuthenticationProvider(userDetailsService);
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		http.authorizeRequests().antMatchers("/ignore/**", "/loginByPhone","/kaptcha-image").permitAll();
+		http.authorizeRequests().antMatchers("/ignore/**", "/loginByPhone","/kaptcha-image","/wechat/oauthCallback").permitAll();
 		http.formLogin().loginPage("/login").permitAll().and().authorizeRequests().anyRequest().authenticated();
 		
-		WeiXinPreAuthorizeFilter weiXinPreAuthorizeFilter = new WeiXinPreAuthorizeFilter(applicationContext);
+		WechatAuthorizeFilter weiXinPreAuthorizeFilter = new WechatAuthorizeFilter(applicationContext);
 		http.addFilterBefore(weiXinPreAuthorizeFilter, AbstractPreAuthenticatedProcessingFilter.class);
 	}
 

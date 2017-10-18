@@ -1,4 +1,4 @@
-package tech.tgls.mms.auth.account.security.weixin;
+package tech.tgls.mms.auth.wechat.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,22 +13,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-public class WeiXinAuthenticationProvider implements AuthenticationProvider {
+public class WechatAuthenticationProvider implements AuthenticationProvider {
 	private static final Logger logger = LoggerFactory
-			.getLogger(WeiXinAuthenticationProvider.class);
+			.getLogger(WechatAuthenticationProvider.class);
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource
 			.getAccessor();
 
 	private UserDetailsService userDetailsService;
 
-	public WeiXinAuthenticationProvider(UserDetailsService userDetailsService) {
+	public WechatAuthenticationProvider(UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication)
 			throws AuthenticationException {
-		WeiXinToken token = (WeiXinToken) authentication;
+		WechatToken token = (WechatToken) authentication;
 
 		UserDetails loadedUser = null;
 		try {
@@ -56,7 +56,7 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		return authentication.equals(WeiXinToken.class);
+		return authentication.equals(WechatToken.class);
 	}
 
 }

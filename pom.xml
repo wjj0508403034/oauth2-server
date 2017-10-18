@@ -29,6 +29,7 @@
 		<commons-lang3.version>3.4</commons-lang3.version>
 		<jsoup.version>1.8.2</jsoup.version>
 		<joda-time.version>2.9.4</joda-time.version>
+		<java-jwt.version>2.1.0</java-jwt.version>
 	</properties>
 
 	<dependencies>
@@ -114,6 +115,22 @@
 			<artifactId>kaptcha</artifactId>
 			<version>2.3.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>fluent-hc</artifactId>
+			<version>4.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>19.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>${java-jwt.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -96,6 +96,16 @@ public interface Constants {
      * 会员Id格式化长度
      */
     public static final String MEMBER_FORMAT = "%08d";
+    
+    String wxAppId = "wx_appid";
+    
+
+    //url传递appId参数名
+    String sessionAppId="SessionWxAppId";
+    
+    //红包抽奖，根据openid 获取用户
+    String userByOpenIdCookieName="userByOpenId";
+    String userByOpenIdTokenKey="userByOpenIdToken";
 
 
 

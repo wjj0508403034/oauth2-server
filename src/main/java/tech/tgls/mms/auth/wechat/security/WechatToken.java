@@ -1,8 +1,8 @@
-package tech.tgls.mms.auth.account.security.weixin;
+package tech.tgls.mms.auth.wechat.security;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-public class WeiXinToken extends AbstractAuthenticationToken {
+public class WechatToken extends AbstractAuthenticationToken {
 
 	private static final long serialVersionUID = -6273156219651714388L;
 
@@ -10,7 +10,7 @@ public class WeiXinToken extends AbstractAuthenticationToken {
 	private Object principal;
 	private Object credentials;
 
-	public WeiXinToken(String openId) {
+	public WechatToken(String openId) {
 		super(null);
 		this.openId = openId;
 	}
