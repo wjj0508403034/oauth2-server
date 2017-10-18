@@ -43,10 +43,10 @@ create table if not exists oauth_code (
 );
 
 create table if not exists oauth_approvals (
-    user_id VARCHAR(255),
-    client_id VARCHAR(255),
+    userId VARCHAR(255),
+    clientId VARCHAR(255),
     scope VARCHAR(255),
     status VARCHAR(10),
-    expires_at TIMESTAMP,
-    last_modified_at TIMESTAMP NULL DEFAULT NULL
+    expiresAt TIMESTAMP,
+    lastModifiedAt TIMESTAMP NULL DEFAULT NULL
 );

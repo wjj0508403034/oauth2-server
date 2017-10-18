@@ -48,7 +48,8 @@ public class ClientDetailsController {
 
 	private Collection<String> autoApproveScopes() {
 		List<String> scopes = new ArrayList<>();
-		scopes.add("weixin");
+		scopes.add("read");
+		scopes.add("write");
 		return scopes;
 	}
 
@@ -63,7 +64,6 @@ public class ClientDetailsController {
 		List<String> scopes = new ArrayList<>();
 		scopes.add("read");
 		scopes.add("write");
-		scopes.add("weixin");
 		return scopes;
 	}
 

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,10 +15,7 @@ import tech.tgls.mms.auth.account.security.weixin.WeiXinAuthenticationProvider;
 import tech.tgls.mms.auth.account.security.weixin.WeiXinPreAuthorizeFilter;
 import tech.tgls.mms.auth.sms.SmsService;
 
-import org.springframework.boot.actuate.autoconfigure.ManagementServerProperties;
-
 @Configuration
-//@Order(ManagementServerProperties.ACCESS_OVERRIDE_ORDER + 2)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
