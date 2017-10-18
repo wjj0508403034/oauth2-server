@@ -17,8 +17,16 @@ public class WechatStateToken {
 	}
 
 	public String getAppId() {
-		if (this.tokens.size() > 2) {
+		if (this.tokens.size() >= 2) {
 			return this.tokens.get(1);
+		}
+
+		return null;
+	}
+
+	public String getTokenType() {
+		if (this.tokens.size() >= 1) {
+			return this.tokens.get(0);
 		}
 
 		return null;

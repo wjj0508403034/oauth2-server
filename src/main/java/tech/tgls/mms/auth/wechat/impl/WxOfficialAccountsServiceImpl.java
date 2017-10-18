@@ -21,7 +21,7 @@ public class WxOfficialAccountsServiceImpl implements WxOfficialAccountsService 
 	@Override
 	public WxPublicAccount findByAppId(String appId) {
 		List<WxPublicAccount> accountList = baseDao
-				.query("from tech.tgls.mms.wx.domain.WxPublicAccount where app_id=:appId")
+				.query("from WxPublicAccount where app_id=:appId")
 				.setParameter("appId", appId).getResultList();
 		if (accountList.size() == 0)
 			return null;

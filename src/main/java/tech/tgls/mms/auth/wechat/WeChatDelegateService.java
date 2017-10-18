@@ -3,6 +3,7 @@ package tech.tgls.mms.auth.wechat;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import tech.tgls.mms.auth.account.Account;
 import tech.tgls.mms.auth.common.jsonbean.JsonResultBean;
 import tech.tgls.mms.auth.wechat.domain.Oauth2AccessToken;
 import tech.tgls.mms.auth.wechat.domain.WxInfo;
@@ -24,5 +25,17 @@ public interface WeChatDelegateService {
 			Oauth2AccessToken accessToken) throws IOException;
 	
 	void loginByWechatOpenId(String openId);
+
+	String storeAuthorizeRequest(String authorizeRequestUrl);
+
+	String obtainAuthorizeRequest(String token);
+
+	Account createWeChatAccountIfNotExists(String openId);
+
+	void bindWeChatUser(Account account);
+
+	String setWechatAuthorizeSuccessState();
+
+	boolean isWechatAuthorizeSuccess(String token);
 
 }

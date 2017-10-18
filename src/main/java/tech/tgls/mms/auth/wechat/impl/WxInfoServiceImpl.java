@@ -26,7 +26,7 @@ public class WxInfoServiceImpl implements WxInfoService {
 	@Override
 	public WxInfo getWxUserIdById(Long id) {
 		List<WxInfo> list = wxInfoBaseDao
-				.query("from wxInfo where user.id=:id").setParameter("id", id)
+				.query("from WxInfo where user.id=:id").setParameter("id", id)
 				.getResultList();
 		if (list.size() == 0)
 			return null;
@@ -49,7 +49,7 @@ public class WxInfoServiceImpl implements WxInfoService {
 	@Override
 	public List<WxInfo> findByUserId(Long userId) {
 		List<WxInfo> list = wxInfoBaseDao
-				.query("from wxInfo where user.id=:id")
+				.query("from WxInfo where user.id=:id")
 				.setParameter("id", userId).getResultList();
 		if (list.size() == 0)
 			return null;
@@ -67,7 +67,7 @@ public class WxInfoServiceImpl implements WxInfoService {
 	public WxInfo existFindByOpenId(String openid) {
 
 		List<WxInfo> list = wxInfoBaseDao
-				.query("from wxInfo where wxOpenId=:openId")
+				.query("from WxInfo where wxOpenId=:openId")
 				.setParameter("openId", openid).getResultList();
 		logger.info("获取到的openid为：" + openid + ",查询到的记录数为：" + list.size());
 		if (list.size() == 0)

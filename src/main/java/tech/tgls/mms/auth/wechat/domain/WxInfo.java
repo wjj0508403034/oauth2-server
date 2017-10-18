@@ -20,7 +20,7 @@ import java.util.Date;
 public class WxInfo {
 
     @Id
-    @GenericGenerator(name = "x", strategy = "tech.tgls.mms.core.common.IdGenerator")
+    @GenericGenerator(name = "x", strategy = "tech.tgls.mms.auth.common.IdGenerator")
     @GeneratedValue(generator = "x")
     private long id;
     

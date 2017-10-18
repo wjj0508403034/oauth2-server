@@ -13,7 +13,7 @@ import java.util.Date;
 @Entity
 public class WxPublicAccount {
     @Id
-    @GenericGenerator(name = "x", strategy = "tech.tgls.mms.api.common.IdGenerator")
+    @GenericGenerator(name = "x", strategy = "tech.tgls.mms.auth.common.IdGenerator")
     @GeneratedValue(generator = "x")
     private long id;
 

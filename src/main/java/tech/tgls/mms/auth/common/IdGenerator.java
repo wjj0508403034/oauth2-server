@@ -22,7 +22,8 @@ import java.util.UUID;
  */
 public class IdGenerator extends AbstractUUIDGenerator implements Configurable {
 
-    private static final Logger logger = LoggerFactory.getLogger(IdGenerator.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory.getLogger(IdGenerator.class);
 
 
 

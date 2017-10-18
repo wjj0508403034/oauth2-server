@@ -11,4 +11,6 @@ public interface AccountService {
 
 	UserInfo updateUserProfile(Principal principal, Map<String, Object> data);
 
+	Account createWechatAccountIfNotExists(String openId);
+
 }

@@ -39,8 +39,7 @@ public class AccountServiceImpl implements AccountService {
 		userInfo.put("userId", account.getId());
 		userInfo.put("username", account.getUsername());
 
-		List<UserAdditionalInfo> additionalInfos = this.userAddtionalInfoRepo
-				.findUserInfosByUserId(account.getId());
+		List<UserAdditionalInfo> additionalInfos = this.userAddtionalInfoRepo.findUserInfosByUserId(account.getId());
 		if (additionalInfos != null) {
 			for (UserAdditionalInfo info : additionalInfos) {
 				userInfo.put(info.getName(), info.getValue());
@@ -51,21 +50,31 @@ public class AccountServiceImpl implements AccountService {
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public UserInfo updateUserProfile(Principal principal,
-			Map<String, Object> data) {
+	public UserInfo updateUserProfile(Principal principal, Map<String, Object> data) {
 		Account account = this.getAccount(principal);
 		this.userAddtionalInfoRepo.deleteUserInfosByUserId(account.getId());
 
 		for (Entry<String, Object> entry : data.entrySet()) {
 			if (!this.ignoreKeys(entry.getKey())) {
-				UserAdditionalInfo userInfo = new UserAdditionalInfo(
-						account.getId(), entry.getKey(), entry.getValue()
-								.toString());
+				UserAdditionalInfo userInfo = new UserAdditionalInfo(account.getId(), entry.getKey(),
+						entry.getValue().toString());
 				this.userAddtionalInfoRepo.save(userInfo);
 			}
 		}
 
 		return this.getUserInfo(principal);
+	}
+
+	@Override
+	public Account createWechatAccountIfNotExists(String openId) {
+		Account account = this.findByUsername(openId);
+		if (account == null) {
+			account = new Account();
+			account.setUsername(openId);
+			account = this.accountRepo.save(account);
+		}
+
+		return account;
 	}
 
 	private boolean ignoreKeys(String key) {
@@ -82,8 +91,7 @@ public class AccountServiceImpl implements AccountService {
 
 	private Account getAccount(Principal principal) {
 		if (principal instanceof Authentication) {
-			UserDetailsImpl user = (UserDetailsImpl) ((Authentication) principal)
-					.getPrincipal();
+			UserDetailsImpl user = (UserDetailsImpl) ((Authentication) principal).getPrincipal();
 			return user.getAccount();
 		}
 
