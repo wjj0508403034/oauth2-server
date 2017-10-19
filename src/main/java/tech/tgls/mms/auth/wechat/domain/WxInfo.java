@@ -16,6 +16,7 @@ import java.util.Date;
  * FIXME: wxInfo 类名首字母小写, 不符合JAVA规范, 需要重构
  *
  */
+@Table(name = "t_wx_info")
 @Entity
 public class WxInfo {
 

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import tech.tgls.mms.auth.account.security.PhoneAuthenticationToken;
+import tech.tgls.mms.auth.admin.security.AdminAuthenticationToken;
 
 @Controller
 public class LoginController {
@@ -64,6 +65,36 @@ public class LoginController {
 			}
 			request.setAttribute("account", ++account);
 			return "login";
+		}
+	}
+
+	@RequestMapping(value = "/admin/login", method = RequestMethod.POST)
+	public String loginByAdmin(HttpServletRequest request,
+			HttpServletResponse response, Model model,
+			@RequestParam(name = "username") String username,
+			@RequestParam(name = "password") String password)
+			throws ServletException, IOException {
+		long startTime = System.currentTimeMillis();
+		logger.info("Admin login ...");
+		try {
+			AdminAuthenticationToken authRequest = new AdminAuthenticationToken(
+					username, password);
+
+			Authentication authResult = this.authenticationManager
+					.authenticate(authRequest);
+
+			long endTime = System.currentTimeMillis();
+			logger.info("login successfully.");
+			logger.info("LoginController.loginByAdmin执行耗时："
+					+ (endTime - startTime) / 1000 + "秒");
+
+			SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+			successHandler.onAuthenticationSuccess(request, response,
+					authResult);
+			return null;
+		} catch (AuthenticationException ex) {
+			logger.error("Admin login failed.", ex);
+			return "admin-login";
 		}
 	}
 }

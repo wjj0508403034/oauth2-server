@@ -13,15 +13,8 @@
 </head>
 
 <body class="loginbg">
-  <div class="logo" style="display: none">
-    <img src="images/mobile/logo.png" alt="名气家" />
-    <div>名气家员</div>
-  </div>
-
   <div class="loginInfo" id="login2">
     <form action="/loginByPhone" method="post">
-      <input type="hidden" name="authSystem" value="${authSystem}">
-      <input type="hidden" name="wxInfoId" value="${wxInfoId}"> <input type="hidden" name="oauthOpenId" value="${oauthOpenId}">
       <div class="weui_cells weui_cells_form">
         <div class="weui_cell">
           <div class="weui_cell_hd">
@@ -69,7 +62,6 @@
         <a th:href="@{/home/index}">点击登录按键，即表示您已阅读并同意<span>服务协议</span></a>
       </div>
     </form>
-  </div>
   </div>
   <script th:src="@{'js/login.js?' + ${version}}"></script>
 </body>

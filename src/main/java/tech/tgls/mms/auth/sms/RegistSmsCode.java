@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
 /**
  * Created by Liya on 2017/4/20.
  */
+@Table(name = "t_sms_code")
 @Entity
 public class RegistSmsCode {
     @Id

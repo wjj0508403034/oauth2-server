@@ -31,6 +31,11 @@ public class AccountServiceImpl implements AccountService {
 	public Account findByUsername(String username) {
 		return this.accountRepo.findByUsername(username);
 	}
+	
+	@Override
+	public Account findAdminByUsername(String username) {
+		return this.accountRepo.findAdminByUsername(username);
+	}
 
 	@Override
 	public UserInfo getUserInfo(Principal principal) {
@@ -97,4 +102,6 @@ public class AccountServiceImpl implements AccountService {
 
 		throw new RuntimeException("Current user is null");
 	}
+
+
 }

@@ -21,4 +21,9 @@ public class ViewController {
 	public String authorizePage() {
 		return "authorize";
 	}
+	
+	@RequestMapping(value = "/admin/login.html", method = RequestMethod.GET)
+	public String adminLoginPage() {
+		return "admin-login";
+	}
 }

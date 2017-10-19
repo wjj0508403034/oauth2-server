@@ -5,11 +5,14 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
+
 import java.util.Date;
 
 /**
  * Created by Liya on 2017/4/5.
  */
+@Table(name = "t_wx_public_account")
 @Entity
 public class WxPublicAccount {
     @Id

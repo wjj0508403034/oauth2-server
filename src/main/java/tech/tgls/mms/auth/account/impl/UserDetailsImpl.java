@@ -1,6 +1,5 @@
 package tech.tgls.mms.auth.account.impl;
 
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 
 import tech.tgls.mms.auth.account.Account;
@@ -11,8 +10,8 @@ public class UserDetailsImpl extends User {
 	private Account account;
 
 	public UserDetailsImpl(Account account) {
-		super(account.getUsername(), account.getPasswordOrDefault(),
-				AuthorityUtils.createAuthorityList("ROLE_USER"));
+		super(account.getUsername(), account.getPasswordOrDefault(), account
+				.getGrantedAuthorityList());
 		this.account = account;
 	}
 

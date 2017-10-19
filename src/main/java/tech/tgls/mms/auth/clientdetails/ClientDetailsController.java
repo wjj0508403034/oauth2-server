@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
@@ -26,9 +26,10 @@ public class ClientDetailsController {
 	@Autowired
 	private ClientDetailsService clientDetailsService;
 
-	@RequestMapping(value = "/clientdetails", method = RequestMethod.POST)
+	@PreAuthorize("hasRole('ADMIN')")
+	@RequestMapping(value = "/admin/clientdetails", method = RequestMethod.POST)
 	@ResponseBody
-	public ClientDetails createOAuthClientDetails(
+	public ClientDetailsResult createOAuthClientDetails(
 			@RequestBody ClientDetailsParam clientDetailsParam) {
 		BaseClientDetails clientDetails = new BaseClientDetails();
 		clientDetails.setClientId(UUID.randomUUID().toString());
@@ -43,7 +44,7 @@ public class ClientDetailsController {
 
 		((JdbcClientDetailsService) this.clientDetailsService)
 				.addClientDetails(clientDetails);
-		return clientDetails;
+		return new ClientDetailsResult(clientDetails);
 	}
 
 	private Collection<String> autoApproveScopes() {

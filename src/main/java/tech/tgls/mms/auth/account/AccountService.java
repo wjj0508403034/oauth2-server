@@ -6,6 +6,8 @@ import java.util.Map;
 public interface AccountService {
 
 	Account findByUsername(String username);
+	
+	Account findAdminByUsername(String username);
 
 	UserInfo getUserInfo(Principal principal);
 

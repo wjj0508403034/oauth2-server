@@ -1,7 +1,6 @@
-package tech.tgls.mms.auth.account.impl;
+package tech.tgls.mms.auth.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,10 +8,11 @@ import org.springframework.stereotype.Service;
 
 import tech.tgls.mms.auth.account.Account;
 import tech.tgls.mms.auth.account.AccountService;
+import tech.tgls.mms.auth.account.impl.UserDetailsImpl;
 
-@Primary
+
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class AdminUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private AccountService accountService;
@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
-		Account account = this.accountService.findByUsername(username);
+		Account account = this.accountService.findAdminByUsername(username);
 		if (account == null) {
 			throw new UsernameNotFoundException(username);
 		}

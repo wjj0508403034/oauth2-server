@@ -12,4 +12,6 @@ public interface AccountRepo extends CrudRepository<Account, Long> {
 	@Query("select t from Account t where t.username = ?1")
 	Account findByUsername(String username);
 
+	@Query("select t from Account t where t.username = ?1 and t.role = 'ADMIN'")
+	Account findAdminByUsername(String username);
 }
