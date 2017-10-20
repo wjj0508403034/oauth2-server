@@ -29,7 +29,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private UserAdditionalInfoRepo userAddtionalInfoRepo;
-	
+
 	@Autowired
 	private WxInfoService wxInfoService;
 
@@ -37,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
 	public Account findByUsername(String username) {
 		return this.accountRepo.findByUsername(username);
 	}
-	
+
 	@Override
 	public Account findAdminByUsername(String username) {
 		return this.accountRepo.findAdminByUsername(username);
@@ -58,7 +58,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 		return userInfo;
 	}
-	
+
 	@Override
 	public WxInfo getUserWxInfo(Principal principal) {
 		Account account = this.getAccount(principal);
@@ -96,6 +96,15 @@ public class AccountServiceImpl implements AccountService {
 		return account;
 	}
 
+	@Override
+	public Account createPhoneAccount(String phone) {
+		Account account = new Account();
+		account.setUsername(phone);
+		account.setAccountType("phone");
+		account.setRole(Role.USER);
+		return this.accountRepo.save(account);
+	}
+
 	private boolean ignoreKeys(String key) {
 		if (StringUtils.equalsIgnoreCase("userId", key)) {
 			return true;
@@ -111,15 +120,12 @@ public class AccountServiceImpl implements AccountService {
 	private Account getAccount(Principal principal) {
 		if (principal instanceof Authentication) {
 			Object user = ((Authentication) principal).getPrincipal();
-			if(user instanceof UserDetailsImpl){
-				return ((UserDetailsImpl)user).getAccount();
+			if (user instanceof UserDetailsImpl) {
+				return ((UserDetailsImpl) user).getAccount();
 			}
 		}
 
 		throw new RuntimeException("Current user is null");
 	}
-
-
-
 
 }

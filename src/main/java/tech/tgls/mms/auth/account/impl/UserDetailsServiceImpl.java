@@ -18,14 +18,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	private AccountService accountService;
 
 	@Override
-	public UserDetails loadUserByUsername(String username)
-			throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Account account = this.accountService.findByUsername(username);
 		if (account == null) {
 			throw new UsernameNotFoundException(username);
 		}
 
 		return new UserDetailsImpl(account);
+	}
+
+	public AccountService getAccountService() {
+		return this.accountService;
 	}
 
 }

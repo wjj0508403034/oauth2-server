@@ -14,6 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import tech.tgls.mms.auth.account.Account;
+import tech.tgls.mms.auth.account.impl.UserDetailsImpl;
+import tech.tgls.mms.auth.account.impl.UserDetailsServiceImpl;
 import tech.tgls.mms.auth.sms.SmsService;
 
 public class PhoneAuthenticationProvider implements AuthenticationProvider {
@@ -21,11 +24,11 @@ public class PhoneAuthenticationProvider implements AuthenticationProvider {
 	private static final Logger logger = LoggerFactory.getLogger(PhoneAuthenticationProvider.class);
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
-	private UserDetailsService userDetailsService;
+	private UserDetailsServiceImpl userDetailsService;
 	private SmsService smsService;
 
 	public PhoneAuthenticationProvider(UserDetailsService userDetailsService, SmsService smsService) {
-		this.userDetailsService = userDetailsService;
+		this.userDetailsService = (UserDetailsServiceImpl) userDetailsService;
 		this.smsService = smsService;
 	}
 
@@ -39,7 +42,10 @@ public class PhoneAuthenticationProvider implements AuthenticationProvider {
 		try {
 			loadedUser = this.userDetailsService.loadUserByUsername(phone);
 		} catch (UsernameNotFoundException notFound) {
-			throw notFound;
+			this.isSmsCodeValid(phone, smscode);
+			logger.info("当前的电话号码{}还不是用户，自动转成用户", phone);
+			Account account = this.userDetailsService.getAccountService().createPhoneAccount(phone);
+			loadedUser = new UserDetailsImpl(account);
 		} catch (Exception repositoryProblem) {
 			throw new InternalAuthenticationServiceException(repositoryProblem.getMessage(), repositoryProblem);
 		}
@@ -50,17 +56,21 @@ public class PhoneAuthenticationProvider implements AuthenticationProvider {
 					"UserDetailsService returned null, which is an interface contract violation");
 		}
 
-		if (!this.smsService.isSmsCodeValid(phone, smscode)) {
-			logger.error("Bad credentials, sms code invalid or expired.");
-			throw new BadCredentialsException(messages.getMessage("PhoneAuthenticationProvider.badCredentials",
-					"Bad credentials, sms code invalid or expired."));
-		}
-		
+		this.isSmsCodeValid(phone, smscode);
+
 		token.setPrincipal(loadedUser);
 		token.setDetails(loadedUser);
 		authentication.setAuthenticated(true);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return authentication;
+	}
+
+	private void isSmsCodeValid(String phone, String smscode) {
+		if (!this.smsService.isSmsCodeValid(phone, smscode)) {
+			logger.error("Bad credentials, sms code invalid or expired.");
+			throw new BadCredentialsException(messages.getMessage("PhoneAuthenticationProvider.badCredentials",
+					"Bad credentials, sms code invalid or expired."));
+		}
 	}
 
 	@Override

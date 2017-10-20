@@ -19,4 +19,6 @@ public interface AccountService {
 
 	WxInfo getUserWxInfo(Principal principal);
 
+	Account createPhoneAccount(String phone);
+
 }
