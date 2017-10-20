@@ -15,6 +15,7 @@ import tech.tgls.mms.auth.account.Account;
 import tech.tgls.mms.auth.account.AccountService;
 import tech.tgls.mms.auth.common.AdvancedUtil;
 import tech.tgls.mms.auth.common.jsonbean.JsonResultBean;
+import tech.tgls.mms.auth.web.WebServerConfig;
 import tech.tgls.mms.auth.wechat.WeChatDelegateService;
 import tech.tgls.mms.auth.wechat.WxInfoService;
 import tech.tgls.mms.auth.wechat.domain.Oauth2AccessToken;
@@ -44,6 +45,9 @@ public class WeChatServiceDelegateImpl implements WeChatDelegateService {
 	@Autowired
 	private WxInfoService wxInfoService;
 
+	@Autowired
+	private WebServerConfig webServerConfig;
+
 	@Override
 	public WxPublicAccount getPublicAccount(String appId) {
 		return this.wxOfficialAccountsService.findByAppId(appId);
@@ -51,8 +55,8 @@ public class WeChatServiceDelegateImpl implements WeChatDelegateService {
 
 	@Override
 	public String buildAuthorizeRequestUrl(WxPublicAccount account, String state) throws UnsupportedEncodingException {
-		return this.advancedUtil.getRequestCodeUrl("http://localhost:8080/wechat/oauthCallback", "snsapi_userinfo",
-				state, account.getAppId());
+		return this.advancedUtil.getRequestCodeUrl(webServerConfig.getDomainAddress() + "/wechat/oauthCallback",
+				"snsapi_userinfo", state, account.getAppId());
 	}
 
 	@Override
