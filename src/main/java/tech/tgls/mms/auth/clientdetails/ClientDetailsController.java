@@ -58,6 +58,7 @@ public class ClientDetailsController {
 		List<String> grantTypes = new ArrayList<>();
 		grantTypes.add("authorization_code");
 		grantTypes.add("refresh_token");
+		grantTypes.add("client_credentials");
 		return grantTypes;
 	}
 

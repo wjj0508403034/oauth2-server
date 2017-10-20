@@ -110,8 +110,10 @@ public class AccountServiceImpl implements AccountService {
 
 	private Account getAccount(Principal principal) {
 		if (principal instanceof Authentication) {
-			UserDetailsImpl user = (UserDetailsImpl) ((Authentication) principal).getPrincipal();
-			return user.getAccount();
+			Object user = ((Authentication) principal).getPrincipal();
+			if(user instanceof UserDetailsImpl){
+				return ((UserDetailsImpl)user).getAccount();
+			}
 		}
 
 		throw new RuntimeException("Current user is null");
