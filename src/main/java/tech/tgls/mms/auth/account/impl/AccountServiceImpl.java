@@ -13,10 +13,13 @@ import org.thymeleaf.util.StringUtils;
 
 import tech.tgls.mms.auth.account.Account;
 import tech.tgls.mms.auth.account.AccountService;
+import tech.tgls.mms.auth.account.Role;
 import tech.tgls.mms.auth.account.UserAdditionalInfo;
 import tech.tgls.mms.auth.account.UserInfo;
 import tech.tgls.mms.auth.account.repo.AccountRepo;
 import tech.tgls.mms.auth.account.repo.UserAdditionalInfoRepo;
+import tech.tgls.mms.auth.wechat.WxInfoService;
+import tech.tgls.mms.auth.wechat.domain.WxInfo;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -26,6 +29,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private UserAdditionalInfoRepo userAddtionalInfoRepo;
+	
+	@Autowired
+	private WxInfoService wxInfoService;
 
 	@Override
 	public Account findByUsername(String username) {
@@ -52,6 +58,12 @@ public class AccountServiceImpl implements AccountService {
 		}
 		return userInfo;
 	}
+	
+	@Override
+	public WxInfo getUserWxInfo(Principal principal) {
+		Account account = this.getAccount(principal);
+		return this.wxInfoService.getWxUserIdById(account.getId());
+	}
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
@@ -76,6 +88,8 @@ public class AccountServiceImpl implements AccountService {
 		if (account == null) {
 			account = new Account();
 			account.setUsername(openId);
+			account.setAccountType("weixin");
+			account.setRole(Role.USER);
 			account = this.accountRepo.save(account);
 		}
 
@@ -102,6 +116,8 @@ public class AccountServiceImpl implements AccountService {
 
 		throw new RuntimeException("Current user is null");
 	}
+
+
 
 
 }

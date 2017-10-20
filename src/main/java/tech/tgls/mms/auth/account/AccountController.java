@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import tech.tgls.mms.auth.wechat.domain.WxInfo;
+
 @Controller
 public class AccountController {
 
@@ -20,6 +22,12 @@ public class AccountController {
 	@ResponseBody
 	public UserInfo getCurrentUserInfo(Principal principal){
 		return this.accountService.getUserInfo(principal);
+	}
+	
+	@RequestMapping(value = "/api/user/wxInfo", method = RequestMethod.GET)
+	@ResponseBody
+	public WxInfo getCurrentUserWxInfo(Principal principal){
+		return this.accountService.getUserWxInfo(principal);
 	}
 	
 	@RequestMapping(value = "/api/user/profile", method = RequestMethod.PUT)

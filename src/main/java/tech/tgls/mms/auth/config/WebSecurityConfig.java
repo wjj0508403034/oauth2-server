@@ -20,7 +20,7 @@ import tech.tgls.mms.auth.sms.SmsService;
 import tech.tgls.mms.auth.wechat.security.WechatAuthenticationProvider;
 import tech.tgls.mms.auth.wechat.security.WechatAuthorizeFilter;
 
-@EnableWebSecurity
+//@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
