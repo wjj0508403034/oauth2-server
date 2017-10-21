@@ -26,4 +26,14 @@ public class ViewController {
 	public String adminLoginPage() {
 		return "admin-login";
 	}
+	
+	@RequestMapping(value = "/agreement.html", method = RequestMethod.GET)
+	public String agreement() {
+		return "agreement";
+	}
+	
+	@RequestMapping(value = "/error.html", method = RequestMethod.GET)
+	public String error() {
+		return "error";
+	}
 }

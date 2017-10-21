@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import tech.tgls.mms.auth.account.Account;
 import tech.tgls.mms.auth.common.consts.Constants;
 import tech.tgls.mms.auth.common.jsonbean.JsonResultBean;
+import tech.tgls.mms.auth.error.ErrorCodes;
+import tech.tgls.mms.auth.error.ErrorHandlerUtils;
 import tech.tgls.mms.auth.wechat.domain.Oauth2AccessToken;
 import tech.tgls.mms.auth.wechat.domain.WxInfo;
 import tech.tgls.mms.auth.wechat.domain.WxPublicAccount;
@@ -33,6 +35,9 @@ public class WechatController {
 	@Autowired
 	private WeChatDelegateService weChatDelegateService;
 
+	@Autowired
+	private ErrorHandlerUtils errorHandlerUtils;
+
 	@RequestMapping("/wechat/oauthCallback")
 	public String oauthCallback(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, URISyntaxException {
@@ -42,7 +47,8 @@ public class WechatController {
 
 		if (code == null) {
 			logger.error("微信oauth回调返回的code为空");
-			return "redirect:/errors/wx404";
+			this.errorHandlerUtils.redirectToErrorPage(response, ErrorCodes.Authorize_Error_Without_Code);
+			return null;
 		}
 
 		logger.info("微信已经授权成功，获得的code为：" + code);
@@ -50,15 +56,17 @@ public class WechatController {
 		String state = request.getParameter("state");
 		if (StringUtils.isEmpty(state)) {
 			logger.error("微信oauth回调返回的state为空");
-			return "redirect:/errors/wx404";
+			this.errorHandlerUtils.redirectToErrorPage(response, ErrorCodes.Authorize_Error_Without_State);
+			return null;
 		}
 
 		String originAuthorizeRequestUrl = weChatDelegateService.obtainAuthorizeRequest(state);
 		if (StringUtils.isEmpty(originAuthorizeRequestUrl)) {
 			logger.error("授权超时，原来授权信息已经丢失");
-			return "redirect:/errors/wx404";
+			this.errorHandlerUtils.redirectToErrorPage(response, ErrorCodes.Authorize_Error_Due_To_Timeout);
+			return null;
 		}
-		
+
 		originAuthorizeRequestUrl = URLDecoder.decode(originAuthorizeRequestUrl, "utf-8");
 
 		String appId = this.getOpenIdFromUrl(originAuthorizeRequestUrl);
@@ -67,7 +75,8 @@ public class WechatController {
 		WxPublicAccount wxPublicAccount = weChatDelegateService.getPublicAccount(appId);
 		if (wxPublicAccount == null) {
 			logger.error("根据appId 没有找到对应公众号信息 {}", appId);
-			return "redirect:/errors/wx404";
+			this.errorHandlerUtils.redirectToErrorPage(response, ErrorCodes.Authorize_Error_With_Invalid_App_Id);
+			return null;
 		}
 
 		// 获取网页授权access_token
@@ -75,7 +84,8 @@ public class WechatController {
 
 		if (weixinOauthToken == null) {
 			logger.error("获取微信token失败");
-			return "redirect:/errors/wx404";
+			this.errorHandlerUtils.redirectToErrorPage(response, ErrorCodes.Authorize_Error_Failed_To_Get_WeiXin_Token);
+			return null;
 		}
 
 		// 用户标识
@@ -96,8 +106,8 @@ public class WechatController {
 				return this.loginAndContinueAuthorize(openId, originAuthorizeRequestUrl);
 			}
 
-			logger.error("获取微信用户{}信息错误", appId);
-			return "redirect:/errors/wx404";
+			this.errorHandlerUtils.redirectToErrorPage(response, ErrorCodes.Authorize_Error_Failed_To_Get_WeiXin_User_Token);
+			return null;
 		}
 
 		if (StringUtils.isBlank(w.getWxUnionId())) {
@@ -107,8 +117,8 @@ public class WechatController {
 				return this.loginAndContinueAuthorize(openId, originAuthorizeRequestUrl);
 			}
 
-			logger.error("获取微信用户{}信息错误", appId);
-			return "redirect:/errors/wx404";
+			this.errorHandlerUtils.redirectToErrorPage(response, ErrorCodes.Authorize_Error_Failed_To_Get_WeiXin_User_Token);
+			return null;
 		}
 
 		logger.info("用户已经存在-------");
@@ -119,7 +129,7 @@ public class WechatController {
 		logger.info("用户{}登录系统，并且继续做授权请求。", openId);
 		weChatDelegateService.loginByWechatOpenId(openId);
 		String stateToken = weChatDelegateService.setWechatAuthorizeSuccessState();
-		return "redirect:" +  authorizeUrl + "&authorizedToken=" + stateToken;
+		return "redirect:" + authorizeUrl + "&authorizedToken=" + stateToken;
 	}
 
 	private String getOpenIdFromUrl(String authorizeUrl) throws URISyntaxException {

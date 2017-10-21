@@ -19,7 +19,6 @@ import tech.tgls.mms.auth.sms.SmsService;
 import tech.tgls.mms.auth.wechat.security.WechatAuthenticationProvider;
 import tech.tgls.mms.auth.wechat.security.WechatAuthorizeFilter;
 
-
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -49,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public AdminAuthenticationProvider adminAuthenticationProvider() {
-		AdminAuthenticationProvider provider =  new AdminAuthenticationProvider();
+		AdminAuthenticationProvider provider = new AdminAuthenticationProvider();
 		provider.setUserDetailsService(adminUserDetailsService);
 		return provider;
 	}
@@ -57,22 +56,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		http.authorizeRequests()
-				.antMatchers("/ignore/**", "/loginByPhone","/admin/login.html","/admin/login", "/kaptcha-image",
-						"/wechat/oauthCallback").permitAll();
-		http.formLogin().loginPage("/login").permitAll().and()
-				.authorizeRequests().anyRequest().authenticated();
+		http.authorizeRequests().antMatchers("/ignore/**", "/loginByPhone", "/admin/login.html", "/admin/login",
+				"/kaptcha-image", "/wechat/oauthCallback", "/agreement.html", "/error.html").permitAll();
+		http.formLogin().loginPage("/login").permitAll().and().authorizeRequests().anyRequest().authenticated();
 
-		WechatAuthorizeFilter weiXinPreAuthorizeFilter = new WechatAuthorizeFilter(
-				applicationContext);
-		http.addFilterBefore(weiXinPreAuthorizeFilter,
-				AbstractPreAuthenticatedProcessingFilter.class);
+		WechatAuthorizeFilter weiXinPreAuthorizeFilter = new WechatAuthorizeFilter(applicationContext);
+		http.addFilterBefore(weiXinPreAuthorizeFilter, AbstractPreAuthenticatedProcessingFilter.class);
 	}
 
 	@Autowired
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth)
-			throws Exception {
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(this.adminAuthenticationProvider());
 		auth.authenticationProvider(this.weiXinAuthenticationProvider());
 		auth.authenticationProvider(this.phoneAuthenticationProvider());

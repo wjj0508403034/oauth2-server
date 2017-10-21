@@ -14,6 +14,8 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import tech.tgls.mms.auth.error.ErrorCodes;
+import tech.tgls.mms.auth.error.ErrorHandlerUtils;
 import tech.tgls.mms.auth.wechat.WeChatDelegateService;
 import tech.tgls.mms.auth.wechat.domain.WxPublicAccount;
 
@@ -55,7 +57,7 @@ public class WechatAuthorizeFilter extends OncePerRequestFilter {
 				if (officialAccountAppId == null) {
 					// 跳转到授权错误页面,授权参数里面没有公众号的appId
 					LOGGER.error("跳转到授权错误页面,授权参数里面没有公众号的appId");
-					response.sendRedirect("/errors/oauth");
+					this.errorHandlerUtils().redirectToErrorPage(response, ErrorCodes.Authorize_Error_Without_App_Id);
 					return;
 				}
 
@@ -63,7 +65,8 @@ public class WechatAuthorizeFilter extends OncePerRequestFilter {
 				if (officialAccount == null) {
 					// 跳转到授权错误页面,授权参数里面的公众号的appId不正确或者没有在auth server里面注册
 					LOGGER.error("跳转到授权错误页面,授权参数里面的公众号的appId不正确或者没有在auth server里面注册");
-					response.sendRedirect("/errors/oauth");
+					this.errorHandlerUtils().redirectToErrorPage(response,
+							ErrorCodes.Authorize_Error_With_Invalid_App_Id);
 					return;
 				}
 
@@ -78,6 +81,10 @@ public class WechatAuthorizeFilter extends OncePerRequestFilter {
 
 		filterChain.doFilter(request, response);
 
+	}
+
+	private ErrorHandlerUtils errorHandlerUtils() {
+		return this.applicationContext.getBean(ErrorHandlerUtils.class);
 	}
 
 	private WeChatDelegateService weChatDelegateService() {
