@@ -37,5 +37,9 @@ public interface WeChatDelegateService {
 	String setWechatAuthorizeSuccessState();
 
 	boolean isWechatAuthorizeSuccess(String token);
+	
+	Account findBindUser(String openId);
+	
+	void autoLogin(Account account);
 
 }

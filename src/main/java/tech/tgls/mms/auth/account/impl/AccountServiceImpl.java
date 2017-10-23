@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
@@ -18,6 +19,7 @@ import tech.tgls.mms.auth.account.UserAdditionalInfo;
 import tech.tgls.mms.auth.account.UserInfo;
 import tech.tgls.mms.auth.account.repo.AccountRepo;
 import tech.tgls.mms.auth.account.repo.UserAdditionalInfoRepo;
+import tech.tgls.mms.auth.account.security.PhoneAuthenticationToken;
 import tech.tgls.mms.auth.wechat.WxInfoService;
 import tech.tgls.mms.auth.wechat.domain.WxInfo;
 
@@ -50,12 +52,16 @@ public class AccountServiceImpl implements AccountService {
 		userInfo.put("userId", account.getId());
 		userInfo.put("username", account.getUsername());
 
-		List<UserAdditionalInfo> additionalInfos = this.userAddtionalInfoRepo.findUserInfosByUserId(account.getId());
+		List<UserAdditionalInfo> additionalInfos = this.userAddtionalInfoRepo
+				.findUserInfosByUserId(account.getId());
 		if (additionalInfos != null) {
 			for (UserAdditionalInfo info : additionalInfos) {
 				userInfo.put(info.getName(), info.getValue());
 			}
 		}
+
+		WxInfo wxInfo = this.wxInfoService.getWxUserIdById(account.getId());
+		userInfo.put("wenxin", wxInfo);
 		return userInfo;
 	}
 
@@ -67,14 +73,16 @@ public class AccountServiceImpl implements AccountService {
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public UserInfo updateUserProfile(Principal principal, Map<String, Object> data) {
+	public UserInfo updateUserProfile(Principal principal,
+			Map<String, Object> data) {
 		Account account = this.getAccount(principal);
 		this.userAddtionalInfoRepo.deleteUserInfosByUserId(account.getId());
 
 		for (Entry<String, Object> entry : data.entrySet()) {
 			if (!this.ignoreKeys(entry.getKey())) {
-				UserAdditionalInfo userInfo = new UserAdditionalInfo(account.getId(), entry.getKey(),
-						entry.getValue().toString());
+				UserAdditionalInfo userInfo = new UserAdditionalInfo(
+						account.getId(), entry.getKey(), entry.getValue()
+								.toString());
 				this.userAddtionalInfoRepo.save(userInfo);
 			}
 		}
@@ -105,12 +113,32 @@ public class AccountServiceImpl implements AccountService {
 		return this.accountRepo.save(account);
 	}
 
+	@Override
+	public void autoLogin(Account account) {
+		PhoneAuthenticationToken authenticationToken = new PhoneAuthenticationToken(
+				null, null);
+		authenticationToken.setPrincipal(account);
+		authenticationToken.setDetails(account);
+		authenticationToken.setAuthenticated(true);
+		SecurityContextHolder.getContext().setAuthentication(
+				authenticationToken);
+	}
+
+	@Override
+	public boolean isLogin() {
+		return SecurityContextHolder.getContext().getAuthentication() != null;
+	}
+
 	private boolean ignoreKeys(String key) {
 		if (StringUtils.equalsIgnoreCase("userId", key)) {
 			return true;
 		}
 
 		if (StringUtils.equalsIgnoreCase("username", key)) {
+			return true;
+		}
+
+		if (StringUtils.equalsIgnoreCase("wenxin", key)) {
 			return true;
 		}
 

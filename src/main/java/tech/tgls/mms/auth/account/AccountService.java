@@ -21,4 +21,8 @@ public interface AccountService {
 
 	Account createPhoneAccount(String phone);
 
+	void autoLogin(Account account);
+
+	boolean isLogin();
+
 }

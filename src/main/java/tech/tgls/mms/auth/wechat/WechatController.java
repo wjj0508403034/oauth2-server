@@ -91,8 +91,8 @@ public class WechatController {
 		// 用户标识
 		String openId = weixinOauthToken.getOpenid();
 		logger.info("微信用户标识{}", openId);
-		Account account = weChatDelegateService.createWeChatAccountIfNotExists(openId);
-
+		//Account account = weChatDelegateService.createWeChatAccountIfNotExists(openId);
+		Account account  = weChatDelegateService.findBindUser(openId);
 		WxInfo w = weChatDelegateService.findWxInfoFromDB(openId);
 
 		JsonResultBean snsUserInfoResult = null;
@@ -102,8 +102,8 @@ public class WechatController {
 			logger.info("wxInfo is null-----------");
 			snsUserInfoResult = weChatDelegateService.getWeChatUserInfo(wxPublicAccount, weixinOauthToken);
 			if (snsUserInfoResult.getStat() == Constants.RETURN_CODE_SUCCESS) {
-				weChatDelegateService.bindWeChatUser(account);
-				return this.loginAndContinueAuthorize(openId, originAuthorizeRequestUrl);
+				//weChatDelegateService.bindWeChatUser(account);
+				return this.continueAuthorize(account, originAuthorizeRequestUrl);
 			}
 
 			this.errorHandlerUtils.redirectToErrorPage(response, ErrorCodes.Authorize_Error_Failed_To_Get_WeiXin_User_Token);
@@ -113,8 +113,8 @@ public class WechatController {
 		if (StringUtils.isBlank(w.getWxUnionId())) {
 			snsUserInfoResult = weChatDelegateService.getWeChatUserInfo(wxPublicAccount, weixinOauthToken);
 			if (snsUserInfoResult.getStat() == Constants.RETURN_CODE_SUCCESS) {
-				weChatDelegateService.bindWeChatUser(account);
-				return this.loginAndContinueAuthorize(openId, originAuthorizeRequestUrl);
+				//weChatDelegateService.bindWeChatUser(account);
+				return this.continueAuthorize(account, originAuthorizeRequestUrl);
 			}
 
 			this.errorHandlerUtils.redirectToErrorPage(response, ErrorCodes.Authorize_Error_Failed_To_Get_WeiXin_User_Token);
@@ -122,12 +122,15 @@ public class WechatController {
 		}
 
 		logger.info("用户已经存在-------");
-		return this.loginAndContinueAuthorize(openId, originAuthorizeRequestUrl);
+		return this.continueAuthorize(account, originAuthorizeRequestUrl);
 	}
 
-	private String loginAndContinueAuthorize(String openId, String authorizeUrl) {
-		logger.info("用户{}登录系统，并且继续做授权请求。", openId);
-		weChatDelegateService.loginByWechatOpenId(openId);
+	private String continueAuthorize(Account account, String authorizeUrl) {
+		if(account != null){
+			logger.info("用户{}登录系统，并且继续做授权请求。", account.getUsername());
+			weChatDelegateService.autoLogin(account);
+		}
+		
 		String stateToken = weChatDelegateService.setWechatAuthorizeSuccessState();
 		return "redirect:" + authorizeUrl + "&authorizedToken=" + stateToken;
 	}

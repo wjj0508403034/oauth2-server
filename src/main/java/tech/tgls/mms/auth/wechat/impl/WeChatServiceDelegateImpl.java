@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
-
 import org.springframework.stereotype.Service;
 
 import tech.tgls.mms.auth.account.Account;
@@ -117,6 +116,20 @@ public class WeChatServiceDelegateImpl implements WeChatDelegateService {
 	public boolean isWechatAuthorizeSuccess(String token) {
 		String value = redisTemplate.opsForValue().get(token);
 		return Boolean.valueOf(value);
+	}
+
+	@Override
+	public Account findBindUser(String openId) {
+		WxInfo wxInfo = this.findWxInfoFromDB(openId);
+		if(wxInfo != null){
+			return wxInfo.getUser();
+		}
+		return null;
+	}
+
+	@Override
+	public void autoLogin(Account account) {
+		this.accountService.autoLogin(account);
 	}
 
 }

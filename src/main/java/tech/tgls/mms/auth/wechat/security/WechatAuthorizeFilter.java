@@ -1,6 +1,7 @@
 package tech.tgls.mms.auth.wechat.security;
 
 import java.io.IOException;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import tech.tgls.mms.auth.account.AccountService;
 import tech.tgls.mms.auth.error.ErrorCodes;
 import tech.tgls.mms.auth.error.ErrorHandlerUtils;
 import tech.tgls.mms.auth.wechat.WeChatDelegateService;
@@ -89,5 +91,9 @@ public class WechatAuthorizeFilter extends OncePerRequestFilter {
 
 	private WeChatDelegateService weChatDelegateService() {
 		return this.applicationContext.getBean(WeChatDelegateService.class);
+	}
+	
+	private AccountService accountService(){
+		return this.applicationContext.getBean(AccountService.class);
 	}
 }
