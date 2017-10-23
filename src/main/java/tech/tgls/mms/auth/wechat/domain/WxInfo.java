@@ -3,6 +3,8 @@ package tech.tgls.mms.auth.wechat.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import tech.tgls.mms.auth.account.Account;
 
 import javax.persistence.*;
@@ -110,6 +112,7 @@ public class WxInfo {
                 '}';
     }
 
+    @JsonIgnore
 	public Account getUser() {
 		return user;
 	}
