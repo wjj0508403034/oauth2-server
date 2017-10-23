@@ -32,11 +32,11 @@ public interface WeChatDelegateService {
 
 	Account createWeChatAccountIfNotExists(String openId);
 
-	void bindWeChatUser(Account account);
+	void bindWeChatUser(Account account,String openId);
 
-	String setWechatAuthorizeSuccessState();
+	String setWechatAuthorizeSuccessState(String openId);
 
-	boolean isWechatAuthorizeSuccess(String token);
+	String getWechatAuthorizeOpenId(String token);
 	
 	Account findBindUser(String openId);
 	

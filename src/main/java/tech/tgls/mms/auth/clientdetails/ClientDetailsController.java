@@ -21,8 +21,6 @@ public class ClientDetailsController {
 
 	private final static Integer Day = 24 * 60 * 60;
 
-	private final static Integer Year = 365 * Day;
-
 	@Autowired
 	private ClientDetailsService clientDetailsService;
 
@@ -36,7 +34,7 @@ public class ClientDetailsController {
 		clientDetails.setClientSecret(UUID.randomUUID().toString());
 		clientDetails.setAutoApproveScopes(this.autoApproveScopes());
 		clientDetails.setAccessTokenValiditySeconds(Day);
-		clientDetails.setRefreshTokenValiditySeconds(10 * Year);
+		clientDetails.setRefreshTokenValiditySeconds(30 * Day);
 		clientDetails.setAuthorizedGrantTypes(this.authorizedGrantTypes());
 		clientDetails.setRegisteredRedirectUri(clientDetailsParam
 				.getRedirectUrls());

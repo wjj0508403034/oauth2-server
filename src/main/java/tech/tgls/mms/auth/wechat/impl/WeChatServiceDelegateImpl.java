@@ -69,8 +69,8 @@ public class WeChatServiceDelegateImpl implements WeChatDelegateService {
 	}
 
 	@Override
-	public void bindWeChatUser(Account account) {
-		WxInfo wxInfo = this.findWxInfoFromDB(account.getUsername());
+	public void bindWeChatUser(Account account,String openId) {
+		WxInfo wxInfo = this.findWxInfoFromDB(openId);
 		if (wxInfo != null) {
 			wxInfo.setUser(account);
 			wxInfoService.update(wxInfo);
@@ -106,16 +106,15 @@ public class WeChatServiceDelegateImpl implements WeChatDelegateService {
 	}
 
 	@Override
-	public String setWechatAuthorizeSuccessState() {
+	public String setWechatAuthorizeSuccessState(String openId) {
 		String uuid = UUID.randomUUID().toString();
-		redisTemplate.opsForValue().set(uuid, "true", 60 * 1, TimeUnit.SECONDS);
+		redisTemplate.opsForValue().set(uuid, openId, 60 * 1, TimeUnit.SECONDS);
 		return uuid;
 	}
 
 	@Override
-	public boolean isWechatAuthorizeSuccess(String token) {
-		String value = redisTemplate.opsForValue().get(token);
-		return Boolean.valueOf(value);
+	public String getWechatAuthorizeOpenId(String token) {
+		return redisTemplate.opsForValue().get(token);
 	}
 
 	@Override

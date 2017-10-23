@@ -15,6 +15,7 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import tech.tgls.mms.auth.account.Account;
 import tech.tgls.mms.auth.account.AccountService;
 import tech.tgls.mms.auth.error.ErrorCodes;
 import tech.tgls.mms.auth.error.ErrorHandlerUtils;
@@ -42,8 +43,13 @@ public class WechatAuthorizeFilter extends OncePerRequestFilter {
 			String authorizedToken = request.getParameter("authorizedToken");
 			if (!StringUtils.isEmpty(authorizedToken)) {
 				LOGGER.info("授权参数里面authorizedToken: {}", authorizedToken);
-				if (this.weChatDelegateService().isWechatAuthorizeSuccess(authorizedToken)) {
+				String openId = this.weChatDelegateService().getWechatAuthorizeOpenId(authorizedToken);
+				if(!StringUtils.isEmpty(openId)){
 					LOGGER.info("微信已经授权成功。");
+					Account account = this.accountService().getCurrentAccount();
+					if(account != null){
+						this.weChatDelegateService().bindWeChatUser(account,openId);
+					}
 					filterChain.doFilter(request, response);
 					return;
 				}

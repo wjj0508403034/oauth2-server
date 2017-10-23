@@ -129,6 +129,16 @@ public class AccountServiceImpl implements AccountService {
 		return SecurityContextHolder.getContext().getAuthentication() != null;
 	}
 
+	@Override
+	public Account getCurrentAccount() {
+		if (this.isLogin()) {
+			return this.getAccount(SecurityContextHolder.getContext()
+					.getAuthentication());
+		}
+
+		return null;
+	}
+
 	private boolean ignoreKeys(String key) {
 		if (StringUtils.equalsIgnoreCase("userId", key)) {
 			return true;
