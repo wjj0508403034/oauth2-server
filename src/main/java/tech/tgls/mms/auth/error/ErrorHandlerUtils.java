@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 public class ErrorHandlerUtils {
 
 	public void redirectToErrorPage(HttpServletResponse response, String errorCode) throws IOException {
-		response.sendRedirect("/error.html?code=errorCode");
+		response.sendRedirect("/error.html?code=" + errorCode);
 	}
 }

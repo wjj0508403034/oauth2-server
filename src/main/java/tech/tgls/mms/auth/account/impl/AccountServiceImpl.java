@@ -117,8 +117,9 @@ public class AccountServiceImpl implements AccountService {
 	public void autoLogin(Account account) {
 		PhoneAuthenticationToken authenticationToken = new PhoneAuthenticationToken(
 				null, null);
-		authenticationToken.setPrincipal(account);
-		authenticationToken.setDetails(account);
+		UserDetailsImpl userDetails = new UserDetailsImpl(account);
+		authenticationToken.setPrincipal(userDetails);
+		authenticationToken.setDetails(userDetails);
 		authenticationToken.setAuthenticated(true);
 		SecurityContextHolder.getContext().setAuthentication(
 				authenticationToken);
@@ -132,8 +133,11 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Account getCurrentAccount() {
 		if (this.isLogin()) {
-			return this.getAccount(SecurityContextHolder.getContext()
+			Account account = this.getAccount(SecurityContextHolder.getContext()
 					.getAuthentication());
+			if(account != null){
+				return this.accountRepo.findOne(account.getId());
+			}
 		}
 
 		return null;
