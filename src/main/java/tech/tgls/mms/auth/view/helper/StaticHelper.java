@@ -11,6 +11,6 @@ public class StaticHelper {
     }
 
     public static String getVersion() {
-        return "v=021";
+        return "v=022";
     }
 }

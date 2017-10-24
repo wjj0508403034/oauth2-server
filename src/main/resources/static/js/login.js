@@ -28,7 +28,7 @@ $(function() {
     /*
     图形验证码存在时做判断
      */
-    if ($('#kaptcha')[0]) {
+    if (+$('.weui_vcode').attr("account") > 0 && $('#kaptcha')[0]) {
       //对象存在的处理逻辑
       if ($("#kaptcha").val() == "") {
         $.toptip("请输入图形验证码")
@@ -66,13 +66,14 @@ $(function() {
   function getVcode() {
 
     var _url = '/ignore/sms/getVerificationCode/' + $("#username").val() +
-      '/' + $('#kaptcha').val();
+      '/' + ($('#kaptcha').val() || "undefined");
     console.log(_url)
     $.ajax({
 
       url: _url,
       type: 'GET', //GET
       dataType: 'text', //返回的数据格式：json/xml/html/script/jsonp/text
+      async: false,
       success: function(data) {
         var obj = JSON.parse(data)
         if (obj.stat == 0) {
@@ -104,11 +105,20 @@ $(function() {
     if ($.trim($("#smscode").val()) == "") {
       $.toptip("请输入验证码")
       return false
+    } else if(+$(".weui_vcode").attr("account") > 0 && $.trim($("#kaptcha").val()) == ""){
+      $.toptip("请输入图形验证码")
+      return false;
     } else {
       var correctCode = validateVcode($("#username").val(), $("#vcode").val());
       console.log(correctCode)
       if (correctCode == "false") {
         $.toptip("验证码不正确")
+        var account =  +$(".weui_vcode").attr("account");
+        if(account === NaN){
+        	account = 0;
+        }
+        $(".weui_vcode").attr("account", account + 1);
+        changeR($("#kaptchaImg")[0]);
         return false
       }
     }

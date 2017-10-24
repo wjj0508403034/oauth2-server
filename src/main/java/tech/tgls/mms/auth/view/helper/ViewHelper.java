@@ -12,4 +12,13 @@ public class ViewHelper {
 		Integer account = (Integer) request.getAttribute("account");
 		return account != null && account > 0;
 	}
+	
+	public static int getAccountAttr(HttpServletRequest request){
+		Integer account = (Integer) request.getAttribute("account");
+		if(account != null){
+			return account.intValue();
+		}
+		
+		return 0;
+	}
 }

@@ -39,6 +39,7 @@ public class LoginController {
 			throws ServletException, IOException {
 		long startTime = System.currentTimeMillis();
 
+		model.addAttribute("username", phone);
 		logger.info(" begin login ...");
 
 		try {
@@ -64,6 +65,7 @@ public class LoginController {
 				account = 0;
 			}
 			request.setAttribute("account", ++account);
+			
 			return "login";
 		}
 	}
