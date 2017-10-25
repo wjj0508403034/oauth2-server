@@ -60,7 +60,7 @@ public class AccountServiceImpl implements AccountService {
 			}
 		}
 
-		WxInfo wxInfo = this.wxInfoService.getWxUserIdById(account.getId());
+		List<WxInfo> wxInfo = this.wxInfoService.findByUserId(account.getId());
 		userInfo.put("wenxin", wxInfo);
 		return userInfo;
 	}
