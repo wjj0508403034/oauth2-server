@@ -1,6 +1,7 @@
 package tech.tgls.mms.auth.account.impl;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -52,8 +53,7 @@ public class AccountServiceImpl implements AccountService {
 		userInfo.put("userId", account.getId());
 		userInfo.put("username", account.getUsername());
 
-		List<UserAdditionalInfo> additionalInfos = this.userAddtionalInfoRepo
-				.findUserInfosByUserId(account.getId());
+		List<UserAdditionalInfo> additionalInfos = this.userAddtionalInfoRepo.findUserInfosByUserId(account.getId());
 		if (additionalInfos != null) {
 			for (UserAdditionalInfo info : additionalInfos) {
 				userInfo.put(info.getName(), info.getValue());
@@ -73,21 +73,60 @@ public class AccountServiceImpl implements AccountService {
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public UserInfo updateUserProfile(Principal principal,
-			Map<String, Object> data) {
+	public UserInfo updateUserProfile(Principal principal, Map<String, Object> data) {
 		Account account = this.getAccount(principal);
-		this.userAddtionalInfoRepo.deleteUserInfosByUserId(account.getId());
+		Map<String, UserAdditionalInfo> userInfoMap = this.getUserInfoMap(account);
 
 		for (Entry<String, Object> entry : data.entrySet()) {
 			if (!this.ignoreKeys(entry.getKey())) {
-				UserAdditionalInfo userInfo = new UserAdditionalInfo(
-						account.getId(), entry.getKey(), entry.getValue()
-								.toString());
-				this.userAddtionalInfoRepo.save(userInfo);
+				if (!userInfoMap.containsKey(entry.getKey())) {
+					this.addUserAdditionalInfo(account, entry);
+					continue;
+				}
+
+				UserAdditionalInfo info = userInfoMap.get(entry.getKey());
+				Object value = entry.getValue();
+				if (value == null) {
+					this.deleteUserAdditionInfo(info);
+					continue;
+				}
+
+				/**
+				 * if (value instanceof String) { if
+				 * (StringUtils.isEmpty((String) value)) {
+				 * this.deleteUserAdditionInfo(info); continue; } }
+				 **/
+				
+				this.updateUserAdditionInfo(info, value);
 			}
 		}
 
 		return this.getUserInfo(principal);
+	}
+
+	private void addUserAdditionalInfo(Account account, Entry<String, Object> entry) {
+		UserAdditionalInfo userInfo = new UserAdditionalInfo(account.getId(), entry.getKey(),
+				entry.getValue().toString());
+		this.userAddtionalInfoRepo.save(userInfo);
+	}
+
+	private void deleteUserAdditionInfo(UserAdditionalInfo info) {
+		this.userAddtionalInfoRepo.delete(info);
+	}
+
+	private void updateUserAdditionInfo(UserAdditionalInfo info, Object value) {
+		info.setValue(value.toString());
+		this.userAddtionalInfoRepo.save(info);
+	}
+
+	private Map<String, UserAdditionalInfo> getUserInfoMap(Account account) {
+		List<UserAdditionalInfo> infos = this.userAddtionalInfoRepo.findUserInfosByUserId(account.getId());
+		Map<String, UserAdditionalInfo> userInfoMap = new HashMap<>();
+		for (UserAdditionalInfo info : infos) {
+			userInfoMap.put(info.getName(), info);
+		}
+
+		return userInfoMap;
 	}
 
 	@Override
@@ -115,14 +154,12 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public void autoLogin(Account account) {
-		PhoneAuthenticationToken authenticationToken = new PhoneAuthenticationToken(
-				null, null);
+		PhoneAuthenticationToken authenticationToken = new PhoneAuthenticationToken(null, null);
 		UserDetailsImpl userDetails = new UserDetailsImpl(account);
 		authenticationToken.setPrincipal(userDetails);
 		authenticationToken.setDetails(userDetails);
 		authenticationToken.setAuthenticated(true);
-		SecurityContextHolder.getContext().setAuthentication(
-				authenticationToken);
+		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 	}
 
 	@Override
@@ -133,9 +170,8 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Account getCurrentAccount() {
 		if (this.isLogin()) {
-			Account account = this.getAccount(SecurityContextHolder.getContext()
-					.getAuthentication());
-			if(account != null){
+			Account account = this.getAccount(SecurityContextHolder.getContext().getAuthentication());
+			if (account != null) {
 				return this.accountRepo.findOne(account.getId());
 			}
 		}
