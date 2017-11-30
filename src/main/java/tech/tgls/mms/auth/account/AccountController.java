@@ -1,6 +1,7 @@
 package tech.tgls.mms.auth.account;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +22,16 @@ public class AccountController {
 	public UserInfo getCurrentUserInfo(Principal principal){
 		return this.accountService.getUserInfo(principal);
 	}
-	
-//	@RequestMapping(value = "/api/user/wxInfo", method = RequestMethod.GET)
-//	@ResponseBody
-//	public WxInfo getCurrentUserWxInfo(Principal principal){
-//		return this.accountService.getUserWxInfo(principal);
-//	}
-	
+		
 	@RequestMapping(value = "/api/user/profile", method = RequestMethod.PUT)
 	@ResponseBody
 	public UserInfo updateUserProfile(Principal principal, @RequestBody Map<String,Object> data){
 		return this.accountService.updateUserProfile(principal,data);
+	}
+	
+	@RequestMapping(value = "/api/getUserInfosByIds", method = RequestMethod.POST)
+	@ResponseBody
+	public List<UserInfo> getUserInfosByIds(@RequestBody List<Long> userIds){
+		return this.accountService.getUserInfosByIds(userIds);
 	}
 }

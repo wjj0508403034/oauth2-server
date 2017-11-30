@@ -1,6 +1,7 @@
 package tech.tgls.mms.auth.account;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 import tech.tgls.mms.auth.wechat.domain.WxInfo;
@@ -26,5 +27,7 @@ public interface AccountService {
 	boolean isLogin();
 
 	Account getCurrentAccount();
+
+	List<UserInfo> getUserInfosByIds(List<Long> userIds);
 
 }

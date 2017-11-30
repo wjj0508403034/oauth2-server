@@ -1,6 +1,7 @@
 package tech.tgls.mms.auth.account.impl;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,20 +50,19 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public UserInfo getUserInfo(Principal principal) {
 		Account account = this.getAccount(principal);
-		UserInfo userInfo = new UserInfo();
-		userInfo.put("userId", account.getId());
-		userInfo.put("username", account.getUsername());
-
-		List<UserAdditionalInfo> additionalInfos = this.userAddtionalInfoRepo.findUserInfosByUserId(account.getId());
-		if (additionalInfos != null) {
-			for (UserAdditionalInfo info : additionalInfos) {
-				userInfo.put(info.getName(), info.getValue());
+		return this.getUserInfoByAccount(account);
+	}
+	
+	@Override
+	public List<UserInfo> getUserInfosByIds(List<Long> userIds) {
+		List<UserInfo> result = new ArrayList<>();
+		Iterable<Account> accounts = this.accountRepo.findAll(userIds);
+		for(Account account : accounts){
+			if(account != null){
+				result.add(this.getUserInfoByAccount(account));
 			}
 		}
-
-		List<WxInfo> wxInfo = this.wxInfoService.findByUserId(account.getId());
-		userInfo.put("wenxin", wxInfo);
-		return userInfo;
+		return result;
 	}
 
 	@Override
@@ -91,12 +91,6 @@ public class AccountServiceImpl implements AccountService {
 					continue;
 				}
 
-				/**
-				 * if (value instanceof String) { if
-				 * (StringUtils.isEmpty((String) value)) {
-				 * this.deleteUserAdditionInfo(info); continue; } }
-				 **/
-				
 				this.updateUserAdditionInfo(info, value);
 			}
 		}
@@ -205,5 +199,24 @@ public class AccountServiceImpl implements AccountService {
 
 		throw new RuntimeException("Current user is null");
 	}
+	
+	private UserInfo getUserInfoByAccount(Account account){
+		UserInfo userInfo = new UserInfo();
+		userInfo.put("userId", account.getId());
+		userInfo.put("username", account.getUsername());
+
+		List<UserAdditionalInfo> additionalInfos = this.userAddtionalInfoRepo.findUserInfosByUserId(account.getId());
+		if (additionalInfos != null) {
+			for (UserAdditionalInfo info : additionalInfos) {
+				userInfo.put(info.getName(), info.getValue());
+			}
+		}
+
+		List<WxInfo> wxInfo = this.wxInfoService.findByUserId(account.getId());
+		userInfo.put("wenxin", wxInfo);
+		return userInfo;
+	}
+
+
 
 }
