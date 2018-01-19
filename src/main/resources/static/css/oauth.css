@@ -229,4 +229,12 @@ ul, li {
     font-size: 0.9em;
 }
 
+.agreement_content .agreement{
+	margin-top: 20px;
+}
+
+.agreement_content .agreement a{
+ 	color: white !important;
+}
+
 
