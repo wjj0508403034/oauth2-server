@@ -27,7 +27,7 @@
 		<aliyun-java-sdk-sms.version>3.0.0-rc1</aliyun-java-sdk-sms.version>
 		<commons-io.version>2.5</commons-io.version>
 		<commons-lang3.version>3.4</commons-lang3.version>
-		<jsoup.version>1.8.2</jsoup.version>
+		<jsoup.version>1.15.3</jsoup.version>
 		<joda-time.version>2.9.4</joda-time.version>
 		<java-jwt.version>2.1.0</java-jwt.version>
 	</properties>
